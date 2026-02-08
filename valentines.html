@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joyce Mugo ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: 'Playfair Display', serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    background: linear-gradient(135deg, #ff5c7a, #ff8ca3);
+  }
+
+  /* Background slideshow */
+  .bg-slideshow {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    z-index:0; overflow:hidden;
+  }
+  .bg-slideshow img {
+    position: absolute;
+    width:100%; height:100%;
+    object-fit:cover;
+    opacity:0;
+    animation: bgFade 18s infinite;
+  }
+  .bg-slideshow img:nth-child(1){animation-delay:0s;}
+  .bg-slideshow img:nth-child(2){animation-delay:6s;}
+  .bg-slideshow img:nth-child(3){animation-delay:12s;}
+  @keyframes bgFade {
+    0%{opacity:0; transform:scale(1);}
+    10%{opacity:1; transform:scale(1.05);}
+    30%{opacity:1; transform:scale(1.1);}
+    40%{opacity:0; transform:scale(1.15);}
+    100%{opacity:0;}
+  }
+
+  .overlay {position:fixed; inset:0; background: rgba(0,0,0,0.55); z-index:1;}
+
+  /* Main card */
+  .card {
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(12px);
+    border-radius:22px;
+    padding:40px 30px;
+    text-align:center;
+    width:90%;
+    max-width:420px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.4);
+    position:relative;
+    z-index:2;
+  }
+  h1{font-size:1.9rem;margin-bottom:10px;}
+  p{font-size:1.1rem;margin-bottom:25px;}
+
+  .buttons{position:relative; height:150px;}
+  button{
+    padding:14px 30px;
+    font-size:1rem;
+    border:none;
+    border-radius:30px;
+    cursor:pointer;
+    font-weight:bold;
+  }
+  #yesBtn{background:#fff;color:#ff4d6d;}
+  #noBtn{position:absolute;background:#ff4d6d;color:#fff; left:55%; top:50%;}
+
+  .celebration{display:none; flex-direction:column; align-items:center; animation: fadeIn 1s ease forwards;}
+
+  /* Card slideshow */
+  .slideshow{width:260px;height:260px;border-radius:20px;overflow:hidden;margin-top:20px;border:4px solid #fff;background:#000;}
+  .slideshow img{width:100%;height:100%;object-fit:cover;display:none; animation: slideZoom 2.5s ease;}
+  @keyframes slideZoom{from{opacity:0; transform:scale(1.1);} to{opacity:1; transform:scale(1);}}
+
+  /* Floating flowers/hearts */
+  .flower{position:fixed;font-size:28px;animation: floatUp 4s linear forwards;pointer-events:none; z-index:3;}
+  @keyframes floatUp{from{transform:translateY(0);opacity:1;} to{transform:translateY(-400px);opacity:0;}}
+
+  /* Lyrics box */
+  #lyricsBox{
+    position:fixed;
+    right:20px;
+    top:50%;
+    transform:translateY(-50%);
+    width:300px;
+    max-height:80%;
+    overflow:hidden;
+    text-align:left;
+    font-size:1.2rem;
+    line-height:1.7;
+    z-index:2;
+    background:rgba(0,0,0,0.45);
+    padding:20px;
+    border-radius:15px;
+    font-style:italic;
+  }
+
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+</style>
+</head>
+<body onload="playSong()">
+
+  <!-- Background slideshow -->
+  <div class="bg-slideshow">
+    <img src="bg.jpg">
+    <img src="bg1.jpg">
+    <img src="bg2.jpg">
+    <img src="bg3.jpg">
+    <img src="bg4.jpg">
+    <img src="bg5.jpg">
+    <img src="bg6.jpg">
+  </div>
+  <div class="overlay"></div>
+
+  <!-- Lyrics box -->
+  <div id="lyricsBox"></div>
+
+  <!-- Background music -->
+  <audio id="bgMusic" loop>
+    <source src="song.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Main card -->
+  <div class="card" id="mainCard">
+    <h1>Joyce Mugo 💕</h1>
+    <p><strong>Cuddles</strong> 🥰<br>Will you be my Valentine?</p>
+    <div class="buttons" id="buttons">
+      <button id="yesBtn">YES ❤️</button>
+      <button id="noBtn">NO 🙈</button>
+    </div>
+  </div>
+
+  <!-- Celebration card -->
+  <div class="card celebration" id="celebrationCard">
+    <h1>Yaaaay 🎉💐</h1>
+    <p>Thank you for being such a loving and supportive girlfriend ❤️<br>
+    Your love, patience, and care mean the world to me 🥰<br>
+    Happy Valentine’s, Cuddles 💕</p>
+    <div class="slideshow" id="slideshow">
+      <img src="photo.jpg">
+      <img src="photo1.jpg">
+      <img src="photo2.jpg">
+      <img src="photo3.jpg">
+      <img src="photo4.jpg">
+      <img src="photo5.jpg">
+    </div>
+  </div>
+
+<script>
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+const mainCard = document.getElementById('mainCard');
+const celebrationCard = document.getElementById('celebrationCard');
+const music = document.getElementById('bgMusic');
+const lyricsBox = document.getElementById('lyricsBox');
+
+function playSong(){
+  music.play().catch(()=>{});
+}
+
+// NO button evasive
+noBtn.addEventListener('mouseenter', moveNo);
+noBtn.addEventListener('mousemove', moveNo);
+function moveNo(){
+  const parent = document.getElementById('buttons');
+  const maxX = parent.clientWidth - noBtn.offsetWidth;
+  const maxY = parent.clientHeight - noBtn.offsetHeight;
+  noBtn.style.left = Math.random()*maxX+'px';
+  noBtn.style.top = Math.random()*maxY+'px';
+}
+
+// Lyrics array (full text split by word)
+const lyricsWords = [
+  "NIKI","MINAJ","Come","give","me","love","Give","me","your","Body","OH","AH","AH","AH",
+  "Butta","my","bread","sugar","my","tea","Give","me","your","coco","OH","yeah","yeah","yeah",
+  "Ain't","nobody","touching","you","When","they","try","it","they","touching","you","Oh","yeah","yeah","yea",
+  "Everybody","crashing","you","but","I'm","Wanting","to","marry","you.","I","no","go","carry","another","yo","no","say","i","be","complete","man","yeah",
+  "Man","your","mater","you","there","for","my","mind","inside","yeah","MAN","YOUR","MATTER","YOU","THERE","FOR","MY","MIND","INSIDE","YEAH","MAMIE","WATER","BABY","DO","ME","SOMETHING","NICE","YEAH","GIRL","I","MATTER","GIRL","I","LOVE","YOUR","BODY","TIGHT","YEAH","OH","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA","NA",
+  "LOOK","AT","MY","BIG","BABY","THEY","WOMAN","SO","NICE","AND","HER","SKIN","SO","CLEAN","SHE","CALLING","MY","LOVE","LIKE","A","SWEET","16","OVER","AND","OVER","SHE","CAN","DO","MY","THING","MY","THING","YEAH","SHE","SO","IN","LOVE","WITH","ME",
+  "IT'S","A","BLESSING","THAT","I","FOUND","HER","QUEEN","AND","SHE","DOESN'T","CARE","IF","I'M","POOR","OR","RICH","I","GIVE","HER","MY","LOVE","TILL","ETERNITY","OH","NO","NO","NO","GIRL","I","PROMISE","I'LL","BE","THERE","FOR","YOU",
+  "OH","NO","NO","NO","IF","YOU","EVER","LEAVE","I'LL","GO","HUNTING","FOR","YOU","MY","QUEEN","KISS","YOU","FIRST","THING","IN","LAY","MORNING","O","ANH","AHN","ANH",
+  "FOR","ME","BABY","NEVER","TREAT","YOU","FUNNY","O","I","NO","GO","CARRY","ANOTHER","YOU","NO","SAY","I","BE","COMPLETE","MAN","YEAH","MAN","YOUR","MATTER","YOU","THERE","FOR","MY","MIND","INSIDE","YEAH","MIND","INSIDE","YEAH","MAMIE","WATER","BABY","GIVE","ME","SOMETHING","NICE","YEAH",
+  "GYAYA","MATTER","GIRL","I","LOVE","YOUR","BODY","TIGHT","YEAH","I","NO","GO","CARRY","ANOTHER","YOU","NO","SAY","I","BE","COMPLETE","MAN","YEAH","MIND","YOUR","MATTER","YOU","THERE","FOR","MY","FIND","THE","INSIDE","YEAH","MAMIE","WATER","BABY","GIVE","ME","SOMETHING","NICE","YEAH","GIRL","YOU","MATTER","GIRL","I","LOVE","YOUR","BODY","DIE","YEAH","OH"
+];
+
+yesBtn.addEventListener('click',()=>{
+  mainCard.style.display='none';
+  celebrationCard.style.display='flex';
+  startFlowers();
+  startSlideshow();
+  displayLyrics();
+  music.play().catch(()=>{});
+});
+
+// Floating flowers
+function startFlowers(){
+  setInterval(()=>{
+    const flower = document.createElement('div');
+    flower.className='flower';
+    flower.textContent=['🌸','🌹','💐','🌺','❤️'][Math.floor(Math.random()*5)];
+    flower.style.left=Math.random()*window.innerWidth+'px';
+    flower.style.bottom='-30px';
+    document.body.appendChild(flower);
+    setTimeout(()=>flower.remove(),4000);
+  },250);
+}
+
+// Card slideshow
+function startSlideshow(){
+  const slides=document.querySelectorAll('#slideshow img');
+  let index=0;
+  slides[index].style.display='block';
+  setInterval(()=>{
+    slides[index].style.display='none';
+    index=(index+1)%slides.length;
+    slides[index].style.display='block';
+  },2800);
+}
+
+// Word-by-word lyric display with fade-in
+function displayLyrics(){
+  let index=0;
+  lyricsBox.textContent='';
+  const interval = setInterval(()=>{
+    const wordSpan = document.createElement('span');
+    wordSpan.textContent = lyricsWords[index]+' ';
+    wordSpan.style.opacity = 0;
+    wordSpan.style.transition = 'opacity 0.5s ease';
+    lyricsBox.appendChild(wordSpan);
+    setTimeout(()=>{wordSpan.style.opacity = 1;}, 50);
+    lyricsBox.scrollTop = lyricsBox.scrollHeight;
+    index = (index + 1) % lyricsWords.length;
+  }, 400); // 400ms per word
+}
+</script>
+
+</body>
+</html>
